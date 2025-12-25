@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { HTTPException } from 'hono/http-exception';
 import bible from '../lib/bible.ts';
 
 export const search = new Hono();
@@ -6,9 +7,18 @@ export const search = new Hono();
 search.get('/:query', (c) => {
   const query = c.req.param('query').toLowerCase();
   const exactMatch = c.req.query('exact');
+  const mixMatch = c.req.query('mix');
 
-  const chunks = exactMatch ? [query] : query.split(' ');
+  if (mixMatch && exactMatch) {
+    throw new HTTPException(400, { message: 'Bad Request!' });
+  }
+
+  let chunks = exactMatch ? [query] : query.split(' ');
   const result = new Map<string, string[]>();
+
+  if (mixMatch) {
+    chunks = chunks.map((c) => c.replace('-', ' '));
+  }
 
   bible.forEach((b) => {
     const { bname, CHAPTER } = b;
