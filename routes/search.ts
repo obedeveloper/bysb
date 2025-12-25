@@ -15,10 +15,10 @@ search.get('/:query', (c) => {
     throw new HTTPException(400, { message: 'Bad Request!' });
   }
 
-  let chunks = exactMatch ? [query] : query.split(' ');
+  let chunks = exactMatch == 'true' ? [query] : query.split(' ');
   const result = new Map<string, string[]>();
 
-  if (mixMatch) {
+  if (mixMatch == 'true') {
     chunks = chunks.map((c) => c.replace('-', ' '));
   }
 
