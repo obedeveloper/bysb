@@ -4,49 +4,47 @@ import bible from './lib/bible.ts';
 import { compareBookNames } from './lib/utils.ts';
 
 const app = new Hono();
-app.get('/', (c) => c.json(bible));
 
-app.get('/:book', (c) => {
-  const { book } = c.req.param();
-  const bookContent = bible.find(compareBookNames(book));
+app.get('/:book?/:chapter?/:verse?', (c) => {
+  let { book, chapter, verse } = c.req.param();
 
-  if (!bookContent) {
-    throw new HTTPException(404, {
-      message: 'Igitabo uri gushaka ntabwo kibonetse!',
-    });
+  if (!verse && !chapter && !book) {
+    return c.json(bible);
   }
 
-  return c.json(bookContent);
-});
-
-app.get('/:book/:chapter', (c) => {
-  const { book, chapter } = c.req.param();
-  const bookIndex = bible.findIndex(compareBookNames(book));
-
-  const chapterContent = bible[bookIndex]?.CHAPTER[+chapter - 1];
-
-  if (!chapterContent) {
-    throw new HTTPException(404, {
-      message: 'Igice uri gushaka ntabwo kibonetse!',
-    });
+  const bookContent = bible.find(compareBookNames(book!));
+  if (!verse && !chapter && bookContent) {
+    return c.json(bookContent);
   }
 
-  return c.json(chapterContent);
-});
-
-app.get('/:book/:chapter/:verse', (c) => {
-  const { book, chapter, verse } = c.req.param();
-  const bookIndex = bible.findIndex(compareBookNames(book));
-  const verseContent =
-    bible[bookIndex]?.CHAPTER[+chapter - 1]?.VERS[+verse - 1];
-
-  if (!verseContent) {
-    throw new HTTPException(404, {
-      message: 'Umurongo uri gushaka ntabwo ubonetse!',
-    });
+  const numberOfChapters = bookContent?.CHAPTER.length;
+  if (numberOfChapters == 1 && verse) {
+    throw new HTTPException(403, { message: 'Invalid Format!' });
   }
 
-  return c.json(verseContent);
+  if (numberOfChapters == 1) {
+    [verse, chapter] = [chapter, '1'];
+  }
+
+  if (isNaN(Number(chapter))) {
+    throw new HTTPException(400, { message: 'Bad Request!' });
+  }
+
+  const chapterContent = bookContent?.CHAPTER.at(+chapter! - 1);
+  if (!verse && chapterContent) {
+    return c.json(chapterContent);
+  }
+
+  if (isNaN(Number(verse))) {
+    throw new HTTPException(400, { message: 'Bad Request!' });
+  }
+
+  const verseContent = chapterContent?.VERS.at(+verse! - 1);
+  if (verseContent) {
+    return c.json(verseContent);
+  }
+
+  throw new HTTPException(400, { message: 'Bad Request!' });
 });
 
 Deno.serve(app.fetch);
