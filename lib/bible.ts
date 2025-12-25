@@ -9,7 +9,7 @@ const parser = new XMLParser({
 });
 
 export default (
-  parser.parse(xmlText) as { XMLBIBLE: Bible }
+  parser.parse(xmlText.replace(/\s+/g, ' ')) as { XMLBIBLE: Bible }
 ).XMLBIBLE.BIBLEBOOK.map((b) => {
   const chapter = b.CHAPTER;
 
