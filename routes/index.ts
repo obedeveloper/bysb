@@ -30,7 +30,9 @@ index.get('/:book?/:chapter?/:verse?', (c) => {
     throw new HTTPException(400, { message: 'Bad Request!' });
   }
 
-  const chapterContent = bookContent?.CHAPTER.at(+chapter! - 1);
+  const chapterContent = bookContent?.CHAPTER.find(
+    (c) => c.cnumber == chapter!
+  );
   if (!verse && chapterContent) {
     return c.json(chapterContent);
   }
@@ -39,7 +41,7 @@ index.get('/:book?/:chapter?/:verse?', (c) => {
     throw new HTTPException(400, { message: 'Bad Request!' });
   }
 
-  const verseContent = chapterContent?.VERS.at(+verse! - 1);
+  const verseContent = chapterContent?.VERS.find((v) => v.vnumber == verse);
   if (verseContent) {
     return c.json(verseContent);
   }
