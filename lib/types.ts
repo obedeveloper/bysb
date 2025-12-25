@@ -4,17 +4,17 @@ export interface Bible {
 }
 
 export interface Book {
-  bnumber: number;
+  bnumber: string;
   bname: string;
   CHAPTER: Chapter[];
 }
 
 interface Chapter {
-  cnumber: number;
+  cnumber: string;
   VERS: Verse[];
 }
 
 interface Verse {
-  vnumber: number;
+  vnumber: string;
   content: string;
 }
