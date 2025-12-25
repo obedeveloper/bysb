@@ -1,0 +1,28 @@
+{
+  "version": "5",
+  "specifiers": {
+    "npm:fast-xml-parser@^5.3.3": "5.3.3",
+    "npm:hono@^4.11.1": "4.11.1"
+  },
+  "npm": {
+    "fast-xml-parser@5.3.3": {
+      "integrity": "sha512-2O3dkPAAC6JavuMm8+4+pgTk+5hoAs+CjZ+sWcQLkX9+/tHRuTkQh/Oaifr8qDmZ8iEHb771Ea6G8CdwkrgvYA==",
+      "dependencies": [
+        "strnum"
+      ],
+      "bin": true
+    },
+    "hono@4.11.1": {
+      "integrity": "sha512-KsFcH0xxHes0J4zaQgWbYwmz3UPOOskdqZmItstUG93+Wk1ePBLkLGwbP9zlmh1BFUiL8Qp+Xfu9P7feJWpGNg=="
+    },
+    "strnum@2.1.2": {
+      "integrity": "sha512-l63NF9y/cLROq/yqKXSLtcMeeyOfnSQlfMSlzFt/K73oIaD8DGaQWd7Z34X9GPiKqP5rbSh84Hl4bOlLcjiSrQ=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:fast-xml-parser@^5.3.3",
+      "npm:hono@^4.11.1"
+    ]
+  }
+}
