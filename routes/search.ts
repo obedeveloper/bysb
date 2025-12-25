@@ -9,6 +9,7 @@ search.get('/:query', (c) => {
   const exactMatch = c.req.query('exact');
   const mixMatch = c.req.query('mix');
   const books = c.req.queries('book')?.map((b) => b.toLowerCase());
+  const testament = c.req.query('testament')?.toLowerCase();
 
   if (mixMatch && exactMatch) {
     throw new HTTPException(400, { message: 'Bad Request!' });
@@ -22,9 +23,17 @@ search.get('/:query', (c) => {
   }
 
   bible.forEach((b) => {
-    const { bname, CHAPTER } = b;
+    const { bname, bnumber, CHAPTER } = b;
 
     if (books && !books.includes(bname.toLowerCase())) {
+      return;
+    }
+
+    if (testament == 'old' && +bnumber > 39) {
+      return;
+    }
+
+    if (testament == 'new' && +bnumber < 40) {
       return;
     }
 
