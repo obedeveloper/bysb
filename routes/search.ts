@@ -5,7 +5,9 @@ export const search = new Hono();
 
 search.get('/:query', (c) => {
   const query = c.req.param('query').toLowerCase();
-  const chunks = query.split(' ');
+  const exactMatch = c.req.query('exact');
+
+  const chunks = exactMatch ? [query] : query.split(' ');
   const result = new Map<string, string[]>();
 
   bible.forEach((b) => {
